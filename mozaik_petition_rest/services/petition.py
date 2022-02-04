@@ -24,7 +24,6 @@ class PetitionService(Component):
     @restapi.method(
         routes=[(["/<int:_id>"], "GET")],
         output_param=PydanticModel(PetitionInfo),
-        auth="public",
     )
     def get(self, _id: int) -> PetitionInfo:
         petition = self._get(_id)
@@ -67,7 +66,6 @@ class PetitionService(Component):
         routes=[(["/<int:_id>/register_answer"], "POST")],
         input_param=PydanticModel(PetitionRegistrationRequest),
         output_param=PydanticModel(PetitionRegistrationInfo),
-        auth="public",
     )
     def register_answer(
         self, _id: int, petition_registration_request: PetitionRegistrationRequest
