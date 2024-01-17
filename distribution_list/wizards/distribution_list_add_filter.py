@@ -41,9 +41,11 @@ class DistributionListAddFilter(models.TransientModel):
         active_model = self.env.context.get("active_model")
         if not domain:
             raise exceptions.UserError(
-                _("You have to check the entire list to add the " "current filter")
+                _("You have to check the entire list to add the current filter")
             )
-        model = self.env["ir.model"].search([("model", "=", active_model)], limit=1)
+        model = (
+            self.env["ir.model"].sudo().search([("model", "=", active_model)], limit=1)
+        )
         template = self.env["distribution.list.line.template"].create(
             {"name": self.name, "domain": domain, "src_model_id": model.id}
         )
@@ -70,7 +72,7 @@ class DistributionListAddFilter(models.TransientModel):
             ("model_id.model", "=", active_model),
             ("relation", "=", dst_model.model),
         ]
-        all_fields = self.env["ir.model.fields"].search(domain)
+        all_fields = self.env["ir.model.fields"].sudo().search(domain)
         available_fields = all_fields
         if active_model == dst_model.model:
             domain = [
@@ -78,7 +80,7 @@ class DistributionListAddFilter(models.TransientModel):
                 ("name", "=", "id"),
                 ("model_id", "=", dst_model.id),
             ]
-            all_id_fields = self.env["ir.model.fields"].search(domain)
+            all_id_fields = self.env["ir.model.fields"].sudo().search(domain)
             available_fields |= all_id_fields
         return available_fields
 

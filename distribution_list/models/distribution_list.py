@@ -73,7 +73,7 @@ class DistributionList(models.Model):
         model = False
         mods = self._get_dst_model_names() or ["res.partner"]
         if len(mods) == 1:
-            model = self.env["ir.model"].search([("model", "in", mods)])
+            model = self.env["ir.model"].sudo().search([("model", "in", mods)])
             model = model or self.env.ref("base.model_res_partner")
         return model
 
@@ -91,8 +91,8 @@ class DistributionList(models.Model):
         """
         self.ensure_one()
         default = default or {}
-        default.update({"name": _("%s (copy)") % self.name})
-        result = super(DistributionList, self).copy(default=default)
+        default.update({"name": _("%s (copy)", copy=self.name)})
+        result = super().copy(default=default)
         return result
 
     def _get_target_from_distribution_list(self):
@@ -142,8 +142,11 @@ class DistributionList(models.Model):
             pass
         elif not source_records._fields.get(bridge_field):
             raise exceptions.UserError(
-                _("The target model %s doesn't have a field named " "%s")
-                % (source_model, bridge_field)
+                _(
+                    "The target model %(model)s doesn't have a field named %(bridge)s",
+                    model=source_model,
+                    bridge=bridge_field,
+                )
             )
         elif source_records:
             domain = domain or []
@@ -158,7 +161,10 @@ class DistributionList(models.Model):
                 and values._fields.get(bridge_field).type != "many2one"
             ):
                 raise exceptions.UserError(
-                    _("The target field %s must be a Many2one") % bridge_field
+                    _(
+                        "The target field %(bridge)s must be a Many2one",
+                        bridge=bridge_field,
+                    )
                 )
             if bridge_field != "id":
                 results = values.mapped(bridge_field)

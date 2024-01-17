@@ -17,9 +17,7 @@
         <field name="category_id" ref="module_category_distribution_list" />
         <field
             name="implied_ids"
-            eval="[(6, 0, [
-            ref('res_groups_distribution_list_reader'),
-        ])]"
+            eval="[4, ref('res_groups_distribution_list_reader')]"
         />
     </record>
 
@@ -28,9 +26,7 @@
         <field name="category_id" ref="module_category_distribution_list" />
         <field
             name="implied_ids"
-            eval="[(6, 0, [
-            ref('res_groups_distribution_list_user'),
-        ])]"
+            eval="[4, ref('res_groups_distribution_list_user')]"
         />
         <field
             name="users"

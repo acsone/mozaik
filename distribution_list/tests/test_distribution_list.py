@@ -3,10 +3,10 @@
 from uuid import uuid4
 
 from odoo import exceptions
-from odoo.tests.common import SavepointCase
+from odoo.tests.common import TransactionCase
 
 
-class TestDistributionList(SavepointCase):
+class TestDistributionList(TransactionCase):
     def setUp(self):
         super(TestDistributionList, self).setUp()
         self.partner_obj = self.env["res.partner"]

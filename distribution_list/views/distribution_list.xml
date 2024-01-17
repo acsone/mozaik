@@ -34,6 +34,7 @@
                     name="action_show_result"
                     type="object"
                     icon="fa-address-card text-success"
+                    title="Result"
                 />
             </tree>
         </field>
@@ -51,6 +52,7 @@
                             class="oe_stat_button"
                             string="List result"
                             icon="fa-address-card text-success"
+                            title="Result"
                             type="object"
                             attrs="{'invisible': [('id','=',False)]}"
                         />
@@ -94,6 +96,7 @@
                                         string="Result"
                                         type="object"
                                         icon="fa-address-card text-success"
+                                        title="Result"
                                     />
                                 </tree>
                             </field>
@@ -111,6 +114,7 @@
                                         string="Result"
                                         type="object"
                                         icon="fa-address-card text-success"
+                                        title="Result"
                                     />
                                 </tree>
                             </field>

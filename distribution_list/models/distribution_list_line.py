@@ -34,8 +34,7 @@ class DistributionListLine(models.Model):
     )
     exclude = fields.Boolean(
         default=False,
-        help="Check this box to exclude the filter result "
-        "from the distribution list",
+        help="Check this box to exclude the filter result from the distribution list",
     )
     company_id = fields.Many2one(
         "res.company", "Company", related="distribution_list_id.company_id", store=True
@@ -79,14 +78,14 @@ class DistributionListLine(models.Model):
             ("model_id", "in", src_models.ids),
             ("relation", "in", dst_models.mapped("model")),
         ]
-        all_fields = self.env["ir.model.fields"].search(domain)
+        all_fields = self.env["ir.model.fields"].sudo().search(domain)
 
         domain = [
             ("ttype", "=", "integer"),
             ("name", "=", "id"),
             ("model_id", "in", src_models.ids),
         ]
-        all_id_fields = self.env["ir.model.fields"].search(domain)
+        all_id_fields = self.env["ir.model.fields"].sudo().search(domain)
 
         results = {}
         for record in self:
@@ -116,13 +115,11 @@ class DistributionListLine(models.Model):
         )
         if bad_dist_list_lines:
             details = "\n- ".join(bad_dist_list_lines.mapped("name"))
-            message = (
-                _(
-                    "These filters are not valid because the bridge field "
-                    "is not related to the target model of "
-                    "the distribution list!\n- %s"
-                )
-                % details
+            message = _(
+                "These filters are not valid because the bridge field "
+                "is not related to the target model of "
+                "the distribution list!\n- %(details)s",
+                details=details,
             )
             raise exceptions.ValidationError(message)
 
@@ -169,7 +166,7 @@ class DistributionListLine(models.Model):
             source_model = bridge_field.model_id.model
             field_name = bridge_field.name
             try:
-                self.flush()
+                self.flush_recordset()
                 if field_name == "self":
                     field_name = "id"
                 # not the best, but use directly the sql to improve perf
@@ -189,8 +186,11 @@ class DistributionListLine(models.Model):
                 targets |= self.env[target_model].browse(ids)
             except Exception as e:
                 message = _(
-                    "A filter for the target model %s is not valid.\n" "Details: %s"
-                ) % (target_model, tools.ustr(e))
+                    "A filter for the target model %(target)s is not valid.\n"
+                    "Details: %(details)s",
+                    target=target_model,
+                    details=tools.ustr(e),
+                )
                 raise exceptions.UserError(message) from e
         return targets
 

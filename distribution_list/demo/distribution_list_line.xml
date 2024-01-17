@@ -7,9 +7,9 @@
         id="distribution_list_line_template_one"
         model="distribution.list.line.template"
     >
-        <field name="name">Customer</field>
+        <field name="name">Company</field>
         <field name="src_model_id" ref='base.model_res_partner' />
-        <field name="domain" eval="[['customer','=',True]]" />
+        <field name="domain" eval="[['is_company','=',True]]" />
     </record>
 
     <record id="distribution_list_line_one" model="distribution.list.line">
