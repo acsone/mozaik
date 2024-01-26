@@ -1,0 +1,56 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* survey_distribution_list
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-26 13:48+0000\n"
+"PO-Revision-Date: 2024-01-26 13:48+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: survey_distribution_list
+#: model:ir.model.fields,field_description:survey_distribution_list.field_survey_invite__emails
+msgid "Additional emails"
+msgstr "Emails supplémentaires"
+
+#. module: survey_distribution_list
+#: model:ir.model.fields,field_description:survey_distribution_list.field_survey_invite__distribution_list_id
+msgid "Distribution List"
+msgstr "Liste de distribution"
+
+#. module: survey_distribution_list
+#: model:ir.model.fields,field_description:survey_distribution_list.field_survey_invite__partner_ids
+msgid "Recipients"
+msgstr "Destinataires"
+
+#. module: survey_distribution_list
+#: model:ir.model,name:survey_distribution_list.model_survey_invite
+msgid "Survey Invitation Wizard"
+msgstr ""
+
+#. module: survey_distribution_list
+#. odoo-python
+#: code:addons/survey_distribution_list/wizards/survey_invite.py:0
+#, python-format
+msgid ""
+"The target model of the distribution list is not "
+"compatible with this functionality."
+msgstr ""
+"Le modèle cible de la liste de distribution n'est pas "
+"compatible avec cette fonctionnalité."
+
+#. module: survey_distribution_list
+#: model:ir.model.fields,help:survey_distribution_list.field_survey_invite__emails
+msgid ""
+"This list of emails of recipients will not be converted in contacts.        "
+"Emails must be separated by commas, semicolons or newline."
+msgstr ""
+"Cette liste d'emails de destinataires ne sera pas convertie en partenaires. "
+"Les emails doivent être séparés par virgules, points-virgules ou nouvelles lignes"
