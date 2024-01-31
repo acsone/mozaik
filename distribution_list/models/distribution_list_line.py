@@ -163,7 +163,7 @@ class DistributionListLine(models.Model):
             big_domain = []
             if domains != [[]]:
                 big_domain = expression.OR(domains)
-            source_model = bridge_field.model_id.model
+            source_model = bridge_field.sudo().model_id.model
             field_name = bridge_field.name
             try:
                 self.flush_recordset()
