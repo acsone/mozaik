@@ -73,7 +73,7 @@ class DistributionList(models.Model):
         model = False
         mods = self._get_dst_model_names() or ["res.partner"]
         if len(mods) == 1:
-            model = self.env["ir.model"].sudo().search([("model", "in", mods)])
+            model = self.env["ir.model"].search([("model", "in", mods)])
             model = model or self.env.ref("base.model_res_partner")
         return model
 

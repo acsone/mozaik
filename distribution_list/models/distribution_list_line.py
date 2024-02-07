@@ -78,14 +78,14 @@ class DistributionListLine(models.Model):
             ("model_id", "in", src_models.ids),
             ("relation", "in", dst_models.mapped("model")),
         ]
-        all_fields = self.env["ir.model.fields"].sudo().search(domain)
+        all_fields = self.env["ir.model.fields"].search(domain)
 
         domain = [
             ("ttype", "=", "integer"),
             ("name", "=", "id"),
             ("model_id", "in", src_models.ids),
         ]
-        all_id_fields = self.env["ir.model.fields"].sudo().search(domain)
+        all_id_fields = self.env["ir.model.fields"].search(domain)
 
         results = {}
         for record in self:
@@ -163,7 +163,7 @@ class DistributionListLine(models.Model):
             big_domain = []
             if domains != [[]]:
                 big_domain = expression.OR(domains)
-            source_model = bridge_field.sudo().model_id.model
+            source_model = bridge_field.model_id.model
             field_name = bridge_field.name
             try:
                 self.flush_recordset()
