@@ -73,13 +73,13 @@ class DistributionList(models.Model):
         model = False
         mods = self._get_dst_model_names() or ["res.partner"]
         if len(mods) == 1:
-            model = self.env["ir.model"].search([("model", "in", mods)])
+            model = self.env["ir.model"].sudo().search([("model", "in", mods)])
             model = model or self.env.ref("base.model_res_partner")
         return model
 
     def _get_target_if_no_included_filter(self):
         self.ensure_one()
-        target_model = self.dst_model_id.model
+        target_model = self.dst_model_id.sudo().model
         return self.env[target_model].browse()
 
     def copy(self, default=None):

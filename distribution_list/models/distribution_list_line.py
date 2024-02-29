@@ -76,16 +76,16 @@ class DistributionListLine(models.Model):
         domain = [
             ("ttype", "=", "many2one"),
             ("model_id", "in", src_models.ids),
-            ("relation", "in", dst_models.mapped("model")),
+            ("relation", "in", dst_models.sudo().mapped("model")),
         ]
-        all_fields = self.env["ir.model.fields"].search(domain)
+        all_fields = self.env["ir.model.fields"].sudo().search(domain)
 
         domain = [
             ("ttype", "=", "integer"),
             ("name", "=", "id"),
             ("model_id", "in", src_models.ids),
         ]
-        all_id_fields = self.env["ir.model.fields"].search(domain)
+        all_id_fields = self.env["ir.model.fields"].sudo().search(domain)
 
         results = {}
         for record in self:
@@ -153,7 +153,7 @@ class DistributionListLine(models.Model):
             return False
         # The target model of every lines should be the same
         self.mapped("distribution_list_id").ensure_one()
-        target_model = self.mapped("distribution_list_id.dst_model_id").model
+        target_model = self.mapped("distribution_list_id.dst_model_id").sudo().model
         targets = self.env[target_model].browse()
         for bridge_field in self.mapped("bridge_field_id"):
             self_model = self.filtered(
@@ -163,7 +163,7 @@ class DistributionListLine(models.Model):
             big_domain = []
             if domains != [[]]:
                 big_domain = expression.OR(domains)
-            source_model = bridge_field.model_id.model
+            source_model = bridge_field.sudo().model_id.model
             field_name = bridge_field.name
             try:
                 self.flush_recordset()
@@ -204,7 +204,7 @@ class DistributionListLine(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Result of %s") % self.name,
             "view_mode": "tree",
-            "res_model": self.src_model_id.model,
+            "res_model": self.src_model_id.sudo().model,
             "context": self.env.context,
             "domain": self._get_eval_domain(),
             "target": "current",

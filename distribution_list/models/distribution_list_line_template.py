@@ -90,7 +90,7 @@ class DistributionListLineTemplate(models.Model):
         model = False
         mods = self._get_src_model_names() or ["res.partner"]
         if len(mods) == 1:
-            model = self.env["ir.model"].search([("model", "in", mods)])
+            model = self.env["ir.model"].sudo().search([("model", "in", mods)])
             model = model or self.env.ref("base.model_res_partner")
         return model
 
@@ -113,7 +113,7 @@ class DistributionListLineTemplate(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Result of %(name)s", name=self.name),
             "view_mode": "tree",
-            "res_model": self.src_model_id.model,
+            "res_model": self.src_model_id.sudo().model,
             "context": self.env.context,
             "domain": self._get_eval_domain(),
             "target": "current",
