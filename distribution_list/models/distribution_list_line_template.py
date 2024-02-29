@@ -113,7 +113,7 @@ class DistributionListLineTemplate(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Result of %(name)s", name=self.name),
             "view_mode": "tree",
-            "res_model": self.src_model_id.model,
+            "res_model": self.src_model_id.sudo().model,
             "context": self.env.context,
             "domain": self._get_eval_domain(),
             "target": "current",

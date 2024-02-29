@@ -3,3 +3,5 @@
 from . import distribution_list_line_template
 from . import distribution_list
 from . import distribution_list_line
+from . import ir_model_fields
+from . import ir_model
