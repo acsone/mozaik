@@ -52,16 +52,14 @@ class DistributionList(models.Model):
 
     @api.constrains("partner_path")
     def _check_partner_path(self):
-        for distribution_list in self:
-            if (
-                distribution_list.partner_path
-                and distribution_list.partner_path
-                not in distribution_list.dst_model_id.field_id.mapped("name")
-            ):
+        for dl in self:
+            pp = dl.partner_path
+            if pp and pp not in dl.dst_model_id.sudo().field_id.mapped("name"):
                 raise exceptions.ValidationError(
                     _(
-                        "Partner Path is not valid: this field doesn't exist on model '%s'"
-                        % distribution_list.dst_model_id.name
+                        "Partner Path is not valid: this field doesn't exist on model "
+                        "'%(name)s'",
+                        name=dl.dst_model_id.sudo().name,
                     )
                 )
 
