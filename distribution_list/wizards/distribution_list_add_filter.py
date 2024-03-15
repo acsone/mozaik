@@ -1,6 +1,7 @@
 # Copyright 2018 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import _, api, exceptions, fields, models
+from odoo.osv.expression import FALSE_DOMAIN
 
 
 class DistributionListAddFilter(models.TransientModel):
@@ -28,6 +29,9 @@ class DistributionListAddFilter(models.TransientModel):
         string="Bridge field",
         required=True,
         ondelete="cascade",
+    )
+    bridge_field_id_domain = fields.Binary(
+        attachment=False, readonly=True, store=False, default=FALSE_DOMAIN,
     )
 
     def add_distribution_list_line(self):
@@ -91,7 +95,4 @@ class DistributionListAddFilter(models.TransientModel):
             self.bridge_field_id = fields_available
         else:
             self.bridge_field_id = fields_available.filtered(lambda s: s.name == "id")
-        result = {
-            "domain": {"bridge_field_id": [("id", "in", fields_available.ids)]},
-        }
-        return result
+        self.bridge_field_id_domain = [("id", "in", fields_available.ids)]
