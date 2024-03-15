@@ -8,7 +8,7 @@
         <field name="model">distribution.list.add.filter</field>
         <field name="arch" type="xml">
             <form>
-
+                <field name="bridge_field_id_domain" invisible="1" />
                 <div invisible="not context.get('active_domain')">
                     <div class="oe_title" name="title">
                         <h1>
@@ -21,7 +21,11 @@
                     </div>
                     <group>
                         <field name="distribution_list_id" />
-                        <field name="bridge_field_id" widget="selection" />
+                        <field
+                            name="bridge_field_id"
+                            widget="selection"
+                            domain="bridge_field_id_domain"
+                        />
                         <field name="exclude" />
                     </group>
                 </div>

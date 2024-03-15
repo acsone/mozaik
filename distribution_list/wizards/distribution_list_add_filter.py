@@ -29,6 +29,7 @@ class DistributionListAddFilter(models.TransientModel):
         required=True,
         ondelete="cascade",
     )
+    bridge_field_id_domain = fields.Binary(compute="_compute_bridge_field_id_domain",)
 
     def add_distribution_list_line(self):
         """
@@ -84,14 +85,14 @@ class DistributionListAddFilter(models.TransientModel):
             available_fields |= all_id_fields
         return available_fields
 
-    @api.onchange("distribution_list_id")
-    def _onchange_bridge_field_id(self):
-        fields_available = self._get_valid_bridge_fields()
-        if len(fields_available) == 1:
-            self.bridge_field_id = fields_available
-        else:
-            self.bridge_field_id = fields_available.filtered(lambda s: s.name == "id")
-        result = {
-            "domain": {"bridge_field_id": [("id", "in", fields_available.ids)]},
-        }
-        return result
+    @api.depends("distribution_list_id")
+    def _compute_bridge_field_id_domain(self):
+        for rec in self:
+            fields_available = rec._get_valid_bridge_fields()
+            if len(fields_available) == 1:
+                rec.bridge_field_id = fields_available
+            else:
+                rec.bridge_field_id = fields_available.filtered(
+                    lambda s: s.name == "id"
+                )
+            rec.bridge_field_id_domain = [("id", "in", fields_available.ids)]
