@@ -95,6 +95,32 @@ class DistributionList(models.Model):
         result = super().copy(default=default)
         return result
 
+    def _get_target_ids_from_distribution_list(self):
+        """
+        Computes records ids matching the entire distribution list
+        depending on filters to include or exclude.
+        :return: target list of record ids
+        """
+        self.ensure_one()
+        include_dll = self.to_include_distribution_list_line_ids
+        exclude_dll = self.to_exclude_distribution_list_line_ids
+        if not include_dll:
+            # without filter to include get record ids
+            # from a method to override
+            results_include = self._get_target_if_no_included_filter().ids
+        else:
+            # get records ids to include
+            results_include = include_dll._get_target_ids()
+
+        # get records to exclude
+        if exclude_dll:
+            results_exclude = exclude_dll._get_target_ids()
+        else:
+            results_exclude = []
+
+        result_ids = [rec_id for rec_id in results_include if rec_id not in results_exclude]
+        return result_ids
+
     def _get_target_from_distribution_list(self):
         """
         Computes records matching the entire distribution list
@@ -102,24 +128,8 @@ class DistributionList(models.Model):
         :return: target recordset
         """
         self.ensure_one()
-        include_dll = self.to_include_distribution_list_line_ids
-        exclude_dll = self.to_exclude_distribution_list_line_ids
-        if not include_dll:
-            # without filter to include get records
-            # from a method to override
-            results_include = self._get_target_if_no_included_filter()
-        else:
-            # get records to include
-            results_include = include_dll._get_target_recordset()
-
-        # get records to exclude
-        if exclude_dll:
-            results_exclude = exclude_dll._get_target_recordset()
-        else:
-            results_exclude = self.env[self.dst_model_id.model].browse()
-
-        results = results_include - results_exclude
-        return results
+        rec_ids = self._get_target_ids_from_distribution_list()
+        return self.env[self.dst_model_id.model].browse(rec_ids)
 
     @api.model
     def _get_target(self, source_records, bridge_field, domain, target_model, sort):
