@@ -142,11 +142,10 @@ class DistributionListLine(models.Model):
             self.bridge_field_id = fields_available.filtered(lambda s: s.name == "id")
 
     # pylint: disable=E8103
-    def _get_target_recordset(self):
+    def _get_target_ids(self):
         """
-        Get target recordset where the related domain is applied with a OR
+        Get target model ids where the related domain is applied with a OR
         between every domains
-        :return: target recordset
         """
         # All current recordset should belong to the same model
         if not self:
@@ -154,7 +153,7 @@ class DistributionListLine(models.Model):
         # The target model of every lines should be the same
         self.mapped("distribution_list_id").ensure_one()
         target_model = self.mapped("distribution_list_id.dst_model_id").sudo().model
-        targets = self.env[target_model].browse()
+        res_ids = []
         for bridge_field in self.mapped("bridge_field_id"):
             self_model = self.filtered(
                 lambda r, bf=bridge_field: r.bridge_field_id == bf
@@ -182,8 +181,8 @@ class DistributionListLine(models.Model):
                     where_clause,
                 )
                 self.env.cr.execute(query_str, where_clause_params)
-                ids = [r[0] for r in self.env.cr.fetchall()]
-                targets |= self.env[target_model].browse(ids)
+                ids = [r[0] for r in self.env.cr.fetchall() if r[0] is not None]
+                res_ids += ids
             except Exception as e:
                 message = _(
                     "A filter for the target model %(target)s is not valid.\n"
@@ -192,7 +191,17 @@ class DistributionListLine(models.Model):
                     details=tools.ustr(e),
                 )
                 raise exceptions.UserError(message) from e
-        return targets
+        return res_ids
+
+    def _get_target_recordset(self):
+        """
+        Get target recordset where the related domain is applied with a OR
+        between every domains
+        :return: target recordset
+        """
+        res_ids = self._get_target_ids()
+        target_model = self.mapped("distribution_list_id.dst_model_id").sudo().model
+        return self.env[target_model].browse(res_ids)
 
     def action_show_filter_result(self):
         """
